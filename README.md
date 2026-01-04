@@ -20,7 +20,7 @@ Technology Stack
 - Frontend: HTML, CSS, JavaScript  
 - Backend: Node.js + Vercel Serverless Functions  
 - AI: OpenAI GPT API (gpt-4o-mini)  
-- Version Control:** Git + GitHub  
+- Version Control: Git + GitHub  
 - Deployment: Vercel
 
 ---
