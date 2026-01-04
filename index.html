@@ -16,7 +16,7 @@
 <body>
   <h1>Study & Planning AI</h1>
   <div id="chat"></div>
-  <p id="typing" style="display:none; color: gray;">AI is typing...</p>
+  <p id="typing" style="display:none; color: gray;">AI is thinking...</p>
   <input type="text" id="userMessage" placeholder="Type your question...">
   <button id="sendBtn">Send</button>
 
@@ -35,30 +35,38 @@
       chatDiv.scrollTop = chatDiv.scrollHeight;
     }
 
-    async function sendMessage() {
-      const message = input.value.trim();
-      if (!message) return;
-      appendMessage("You: " + message, "user");
-      input.value = "";
+async function sendMessage() {
+  const message = input.value.trim();
+  if (!message) return;
 
-      try {
-        const response = await fetch(backendUrl, {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ message })
-        });
+  appendMessage("You: " + message, "user");
+  input.value = "";
 
-        const data = await response.json();
-        if (data.reply) {
-          appendMessage("AI: " + data.reply, "ai");
-        } else if (data.error) {
-          appendMessage("Error: " + data.error, "ai");
-        }
-      } catch (err) {
-        appendMessage("Error connecting to backend", "ai");
-        console.error(err);
-      }
+  // Show typing indicator
+  const typing = document.getElementById("typing");
+  typing.style.display = "block";
+
+  try {
+    const response = await fetch(backendUrl, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ message })
+    });
+
+    const data = await response.json();
+
+    typing.style.display = "none";
+
+    if (data.reply) {
+      appendMessage("AI: " + data.reply, "ai");
+    } else {
+      appendMessage("Error: " + data.error, "ai");
     }
+  } catch (err) {
+    typing.style.display = "none";
+    appendMessage("Error connecting to backend", "ai");
+  }
+}
 
     button.addEventListener('click', sendMessage);
     input.addEventListener('keydown', e => { if (e.key === 'Enter') sendMessage(); });
