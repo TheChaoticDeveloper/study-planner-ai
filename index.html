@@ -4,28 +4,124 @@
   <meta charset="UTF-8">
   <title>Study & Planning AI</title>
   <style>
-    body { font-family: Arial, sans-serif; padding: 2rem; background: #f0f4f8; }
-    h1 { color: #333; }
-    #chat { border: 1px solid #ccc; padding: 1rem; height: 300px; overflow-y: auto; background: #fff; }
-    #userMessage { width: 80%; padding: 0.5rem; }
-    button { padding: 0.5rem 1rem; }
-    .user { color: blue; margin: 0.5rem 0; }
-    .ai { color: green; margin: 0.5rem 0; }
+    /* ---------- BODY & GENERAL ---------- */
+    body {
+      font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+      padding: 2rem;
+      background: linear-gradient(135deg, #0f2027, #203a43, #2c5364);
+      color: #fff;
+    }
+
+    h1 {
+      color: #00ffff;
+      text-align: center;
+      text-shadow: 0 0 5px #00ffff, 0 0 10px #00ffff;
+      margin-bottom: 1rem;
+    }
+
+    /* ---------- CHAT BOX ---------- */
+    #chat {
+      border-radius: 15px;
+      padding: 1rem;
+      height: 400px;
+      overflow-y: auto;
+      background: rgba(255, 255, 255, 0.05);
+      box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+      display: flex;
+      flex-direction: column;
+      gap: 0.5rem;
+    }
+
+    /* ---------- CHAT BUBBLES ---------- */
+    .user, .ai {
+      padding: 0.5rem 1rem;
+      display: inline-block;
+      max-width: 70%;
+      word-wrap: break-word;
+    }
+
+    .user {
+      background: linear-gradient(90deg, #1f8ef1, #1c6fe0);
+      color: #fff;
+      border-radius: 15px 15px 0 15px;
+      align-self: flex-end;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.3);
+    }
+
+    .ai {
+      background: linear-gradient(90deg, #00ffaa, #00ddbb);
+      color: #000;
+      border-radius: 15px 15px 15px 0;
+      align-self: flex-start;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.3);
+      text-shadow: 0 0 3px #00ffaa;
+    }
+
+    /* ---------- INPUT & BUTTON ---------- */
+    #userMessage {
+      flex: 1;
+      padding: 0.5rem;
+      border-radius: 10px;
+      border: none;
+      outline: none;
+    }
+
+    button {
+      padding: 0.5rem 1rem;
+      border: none;
+      border-radius: 10px;
+      background: #1f8ef1;
+      color: #fff;
+      cursor: pointer;
+      transition: 0.2s all;
+    }
+
+    button:hover {
+      background: #0f6ec7;
+    }
+
+    /* ---------- TYPING INDICATOR ---------- */
+    #typing {
+      font-style: italic;
+      color: #aaa;
+      margin: 0.5rem 0;
+    }
+
+    /* ---------- FLEX FOR INPUT ---------- */
+    #inputContainer {
+      display: flex;
+      gap: 0.5rem;
+      margin-top: 0.5rem;
+    }
+
+    /* ---------- SCROLLBAR ---------- */
+    #chat::-webkit-scrollbar {
+      width: 8px;
+    }
+    #chat::-webkit-scrollbar-thumb {
+      background: rgba(0,255,170,0.5);
+      border-radius: 4px;
+    }
   </style>
 </head>
 <body>
   <h1>Study & Planning AI</h1>
+
   <div id="chat"></div>
-  <p id="typing" style="display:none; color: gray;">AI is thinking...</p>
-  <input type="text" id="userMessage" placeholder="Type your question...">
-  <button id="sendBtn">Send</button>
+  <p id="typing" style="display:none;">AI is thinking</p>
+
+  <div id="inputContainer">
+    <input type="text" id="userMessage" placeholder="Type your question...">
+    <button id="sendBtn">Send</button>
+  </div>
 
   <script>
     const chatDiv = document.getElementById('chat');
     const input = document.getElementById('userMessage');
     const button = document.getElementById('sendBtn');
+    const typing = document.getElementById('typing');
 
-    const backendUrl = "https://study-planner-ai-backend.vercel.app/api/chat"; // <- Your Vercel backend URL
+    const backendUrl = "https://study-planner-ai-backend.vercel.app/api/chat"; // Your Vercel backend
 
     function appendMessage(text, sender) {
       const p = document.createElement('p');
@@ -35,42 +131,53 @@
       chatDiv.scrollTop = chatDiv.scrollHeight;
     }
 
-async function sendMessage() {
-  const message = input.value.trim();
-  if (!message) return;
+    let typingInterval;
 
-  appendMessage("You: " + message, "user");
-  input.value = "";
+    async function sendMessage() {
+      const message = input.value.trim();
+      if (!message) return;
 
-  // Show typing indicator
-  const typing = document.getElementById("typing");
-  typing.style.display = "block";
+      appendMessage("You: " + message, "user");
+      input.value = "";
+      button.disabled = true;
 
-  try {
-    const response = await fetch(backendUrl, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ message })
-    });
+      // Show typing indicator
+      typing.style.display = "block";
+      let dots = 0;
+      typingInterval = setInterval(() => {
+        dots = (dots + 1) % 4;
+        typing.textContent = "AI is thinking" + ".".repeat(dots);
+      }, 500);
 
-    const data = await response.json();
+      try {
+        const response = await fetch(backendUrl, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ message })
+        });
 
-    typing.style.display = "none";
+        const data = await response.json();
 
-    if (data.reply) {
-      appendMessage("AI: " + data.reply, "ai");
-    } else {
-      appendMessage("Error: " + data.error, "ai");
+        clearInterval(typingInterval);
+        typing.style.display = "none";
+        button.disabled = false;
+
+        if (data.reply) {
+          appendMessage("AI: " + data.reply, "ai");
+        } else if (data.error) {
+          appendMessage("Error: " + data.error, "ai");
+        }
+      } catch (err) {
+        clearInterval(typingInterval);
+        typing.style.display = "none";
+        button.disabled = false;
+        appendMessage("Error connecting to backend", "ai");
+        console.error(err);
+      }
     }
-  } catch (err) {
-    typing.style.display = "none";
-    appendMessage("Error connecting to backend", "ai");
-  }
-}
 
     button.addEventListener('click', sendMessage);
     input.addEventListener('keydown', e => { if (e.key === 'Enter') sendMessage(); });
   </script>
 </body>
 </html>
-
