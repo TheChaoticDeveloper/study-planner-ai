@@ -80,7 +80,7 @@
       background: #0f6ec7;
     }
 
-    /* Specific button spacing */
+    /* Button container */
     #buttonContainer {
       display: flex;
       gap: 0.5rem;
@@ -120,6 +120,42 @@
       background: rgba(0,255,170,0.5);
       border-radius: 4px;
     }
+
+    /* ---------- SUBJECT OVERLAY ---------- */
+    #subjectOverlay {
+      display: none;
+      position: fixed;
+      top:0; left:0; right:0; bottom:0;
+      background: rgba(0,0,0,0.85);
+      color: #fff;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      gap: 1rem;
+      z-index: 1000;
+    }
+
+    .subjectBtn {
+      padding: 0.5rem 1rem;
+      border-radius: 8px;
+      border: none;
+      background: #00ffaa;
+      color: #000;
+      cursor: pointer;
+      transition: 0.2s;
+    }
+    .subjectBtn:hover { background: #00ddbb; }
+
+    #cancelSubject {
+      margin-top: 1rem;
+      background: #f44336;
+      color: #fff;
+      padding: 0.5rem 1rem;
+      border-radius: 8px;
+      cursor: pointer;
+    }
+    #cancelSubject:hover { background: #e53935; }
   </style>
 </head>
 <body>
@@ -127,7 +163,7 @@
 
   <div id="chat"></div>
 
-  <div id="typing" class="ai" style="display:none;">
+  <div id="typing" class="ai">
     AI is typing<span id="typingDots"></span>
   </div>
 
@@ -141,6 +177,19 @@
     <button id="planBtn">7-Day Study Plan</button>
   </div>
 
+  <!-- SUBJECT SELECTION OVERLAY -->
+  <div id="subjectOverlay">
+    <h2>Select a subject for your study plan</h2>
+    <div id="subjectButtons" style="display:flex; gap:0.5rem; flex-wrap: wrap;">
+      <button class="subjectBtn">Math</button>
+      <button class="subjectBtn">English</button>
+      <button class="subjectBtn">Reading</button>
+      <button class="subjectBtn">Science</button>
+      <button class="subjectBtn">Other</button>
+    </div>
+    <button id="cancelSubject">Cancel</button>
+  </div>
+
   <script>
     const chatDiv = document.getElementById('chat');
     const input = document.getElementById('userMessage');
@@ -148,8 +197,12 @@
     const buttonClear = document.getElementById('clearBtn');
     const buttonPlan = document.getElementById('planBtn');
     const typing = document.getElementById('typing');
+    const backendUrl = "https://study-planner-ai-backend.vercel.app/api/chat";
 
-    const backendUrl = "https://study-planner-ai-backend.vercel.app/api/chat"; // Your Vercel backend
+    // Subject overlay elements
+    const subjectOverlay = document.getElementById("subjectOverlay");
+    const subjectButtons = document.querySelectorAll(".subjectBtn");
+    const cancelSubject = document.getElementById("cancelSubject");
 
     function appendMessage(text, sender) {
       const div = document.createElement('div');
@@ -209,7 +262,9 @@
       }
     }
 
-    // Send on button click or Enter key
+    // ---------- Event Listeners ----------
+
+    // Send button & Enter key
     buttonSend.addEventListener('click', () => sendMessage());
     input.addEventListener('keydown', e => { if (e.key === 'Enter') sendMessage(); });
 
@@ -218,11 +273,25 @@
       chatDiv.innerHTML = "";
     });
 
-    // Quick 7-Day Study Plan
-    buttonPlan.addEventListener('click', () => {
-      const planPrompt = "Create a 7-day study plan for Math";
-      sendMessage(planPrompt);
+    // Quick 7-Day Study Plan button opens overlay
+    buttonPlan.addEventListener("click", () => {
+      subjectOverlay.style.display = "flex";
     });
+
+    // Subject selection
+    subjectButtons.forEach(btn => {
+      btn.addEventListener("click", () => {
+        const subject = btn.textContent;
+        subjectOverlay.style.display = "none";
+        sendMessage(`Create a 7-day study plan for ${subject}`);
+      });
+    });
+
+    // Cancel overlay
+    cancelSubject.addEventListener("click", () => {
+      subjectOverlay.style.display = "none";
+    });
+
   </script>
 </body>
 </html>
