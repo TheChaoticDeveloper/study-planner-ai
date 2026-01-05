@@ -1,4 +1,5 @@
 Study & Planning AI
+
 This project is licensed under MIT License see LICENSE for details
 
 A personal AI assistant designed to help students create study plans and manage upcoming events.  
