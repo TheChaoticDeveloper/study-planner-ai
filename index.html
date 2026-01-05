@@ -80,18 +80,19 @@
       background: #0f6ec7;
     }
 
+    /* Specific button spacing */
+    #buttonContainer {
+      display: flex;
+      gap: 0.5rem;
+      margin-top: 0.5rem;
+      flex-wrap: wrap;
+    }
+
     /* ---------- TYPING INDICATOR ---------- */
     #typing {
       font-style: italic;
       color: #aaa;
       margin: 0.5rem 0;
-    }
-
-    /* ---------- FLEX FOR INPUT ---------- */
-    #inputContainer {
-      display: flex;
-      gap: 0.5rem;
-      margin-top: 0.5rem;
     }
 
     /* ---------- SCROLLBAR ---------- */
@@ -110,15 +111,22 @@
   <div id="chat"></div>
   <p id="typing" style="display:none;">AI is thinking</p>
 
-  <div id="inputContainer">
+  <div id="inputContainer" style="display: flex; gap: 0.5rem; margin-top: 0.5rem;">
     <input type="text" id="userMessage" placeholder="Type your question...">
+  </div>
+
+  <div id="buttonContainer">
     <button id="sendBtn">Send</button>
+    <button id="clearBtn">Clear Chat</button>
+    <button id="planBtn">7-Day Study Plan</button>
   </div>
 
   <script>
     const chatDiv = document.getElementById('chat');
     const input = document.getElementById('userMessage');
-    const button = document.getElementById('sendBtn');
+    const buttonSend = document.getElementById('sendBtn');
+    const buttonClear = document.getElementById('clearBtn');
+    const buttonPlan = document.getElementById('planBtn');
     const typing = document.getElementById('typing');
 
     const backendUrl = "https://study-planner-ai-backend.vercel.app/api/chat"; // Your Vercel backend
@@ -126,23 +134,21 @@
     function appendMessage(text, sender) {
       const div = document.createElement('div');
       div.className = sender;
-
-      // Preserve line breaks
       div.innerHTML = text.replace(/\n/g, "<br>");
-      
       chatDiv.appendChild(div);
       chatDiv.scrollTop = chatDiv.scrollHeight;
     }
 
     let typingInterval;
 
-    async function sendMessage() {
-      const message = input.value.trim();
-      if (!message) return;
+    async function sendMessage(message = null) {
+      const msg = message || input.value.trim();
+      if (!msg) return;
 
-      appendMessage("You: " + message, "user");
+      appendMessage("You: " + msg, "user");
       input.value = "";
-      button.disabled = true;
+      buttonSend.disabled = true;
+      buttonPlan.disabled = true;
 
       // Show typing indicator
       typing.style.display = "block";
@@ -156,28 +162,48 @@
         const response = await fetch(backendUrl, {
           method: "POST",
           headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ message })
+          body: JSON.stringify({ message: msg })
         });
 
         const data = await response.json();
 
         clearInterval(typingInterval);
         typing.style.display = "none";
-        button.disabled = false;
+        buttonSend.disabled = false;
+        buttonPlan.disabled = false;
 
         if (data.reply) {
           appendMessage("AI: " + data.reply, "ai");
         } else if (data.error) {
-          appendMessage("Error: " + data.error, "ai");
+          appendMessage("⚠️ " + data.error, "ai");
         }
       } catch (err) {
         clearInterval(typingInterval);
         typing.style.display = "none";
-        button.disabled = false;
+        buttonSend.disabled = false;
+        buttonPlan.disabled = false;
         appendMessage("Error connecting to backend", "ai");
         console.error(err);
       }
     }
+
+    // Send on button click or Enter key
+    buttonSend.addEventListener('click', () => sendMessage());
+    input.addEventListener('keydown', e => { if (e.key === 'Enter') sendMessage(); });
+
+    // Clear chat
+    buttonClear.addEventListener('click', () => {
+      chatDiv.innerHTML = "";
+    });
+
+    // Quick 7-Day Study Plan
+    buttonPlan.addEventListener('click', () => {
+      const planPrompt = "Create a 7-day study plan for Math";
+      sendMessage(planPrompt);
+    });
+  </script>
+</body>
+</html>
 
     button.addEventListener('click', sendMessage);
     input.addEventListener('keydown', e => { if (e.key === 'Enter') sendMessage(); });
