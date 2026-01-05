@@ -90,9 +90,26 @@
 
     /* ---------- TYPING INDICATOR ---------- */
     #typing {
+      display: flex;
+      align-items: center;
       font-style: italic;
       color: #aaa;
       margin: 0.5rem 0;
+    }
+
+    #typingDots span {
+      display: inline-block;
+      animation: bounce 1s infinite;
+      margin-left: 2px;
+    }
+
+    #typingDots span:nth-child(1) { animation-delay: 0s; }
+    #typingDots span:nth-child(2) { animation-delay: 0.2s; }
+    #typingDots span:nth-child(3) { animation-delay: 0.4s; }
+
+    @keyframes bounce {
+      0%, 80%, 100% { transform: translateY(0); }
+      40% { transform: translateY(-6px); }
     }
 
     /* ---------- SCROLLBAR ---------- */
@@ -109,7 +126,10 @@
   <h1>Study & Planning AI</h1>
 
   <div id="chat"></div>
-  <p id="typing" style="display:none;">AI is thinking</p>
+
+  <div id="typing" class="ai" style="display:none;">
+    AI is typing<span id="typingDots"></span>
+  </div>
 
   <div id="inputContainer" style="display: flex; gap: 0.5rem; margin-top: 0.5rem;">
     <input type="text" id="userMessage" placeholder="Type your question...">
@@ -139,7 +159,17 @@
       chatDiv.scrollTop = chatDiv.scrollHeight;
     }
 
-    let typingInterval;
+    function showTyping() {
+      typing.style.display = "flex";
+      const dotsContainer = document.getElementById("typingDots");
+      dotsContainer.innerHTML = "<span>.</span><span>.</span><span>.</span>";
+    }
+
+    function hideTyping() {
+      typing.style.display = "none";
+      const dotsContainer = document.getElementById("typingDots");
+      dotsContainer.innerHTML = "";
+    }
 
     async function sendMessage(message = null) {
       const msg = message || input.value.trim();
@@ -150,13 +180,7 @@
       buttonSend.disabled = true;
       buttonPlan.disabled = true;
 
-      // Show typing indicator
-      typing.style.display = "block";
-      let dots = 0;
-      typingInterval = setInterval(() => {
-        dots = (dots + 1) % 4;
-        typing.textContent = "AI is thinking" + ".".repeat(dots);
-      }, 500);
+      showTyping();
 
       try {
         const response = await fetch(backendUrl, {
@@ -167,8 +191,7 @@
 
         const data = await response.json();
 
-        clearInterval(typingInterval);
-        typing.style.display = "none";
+        hideTyping();
         buttonSend.disabled = false;
         buttonPlan.disabled = false;
 
@@ -178,8 +201,7 @@
           appendMessage("⚠️ " + data.error, "ai");
         }
       } catch (err) {
-        clearInterval(typingInterval);
-        typing.style.display = "none";
+        hideTyping();
         buttonSend.disabled = false;
         buttonPlan.disabled = false;
         appendMessage("Error connecting to backend", "ai");
