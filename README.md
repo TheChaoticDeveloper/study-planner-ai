@@ -29,7 +29,6 @@ Side note(s): Overuse of the AI will result in the developer (me) to pay 5$ as O
 1,000 or more requests/responses by the AI could result in the developer (me) having to pay 5$ (or more) so it would be appreciated if anyone using my project to send a limited amount of messages to the AI.
 
 Thanks and enjoy my AI
-TheChaoticDeveloper
 
 ---
 
