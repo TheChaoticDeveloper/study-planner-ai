@@ -106,38 +106,40 @@ button:hover{
   40%{opacity:1}
 }
 
-/* ---------- SIDE TAB BUTTON ---------- */
-#infoButton{
-  position:fixed;
-  right:0;
-  top:40%;
-  background:#ff2b2b;
-  padding:12px;
-  cursor:pointer;
-  border-radius:10px 0 0 10px;
-  font-weight:bold;
-  z-index:1100; /* above panel */
-}
-
 /* ---------- INFO PANEL ---------- */
 #infoPanel{
   position:fixed;
-  right:-320px; /* hidden by default */
+  right:-320px; /* hidden offscreen */
   top:0;
   width:320px;
   height:100%;
   background:#0b0b0b;
   border-left:3px solid #ff2b2b;
   padding:20px;
-  transition:0.4s; /* smooth slide */
+  transition:0.4s;
   overflow-y:auto;
   z-index:1000;
 }
 
+/* ---------- INFO PANEL OPEN ---------- */
 #infoPanel.open{
-  right:0; /* slides in */
+  right:0; /* slide in */
 }
 
+/* ---------- INFO TAB BUTTON ---------- */
+#infoButton{
+  position:absolute; /* inside panel */
+  left:-60px; /* sticks outside panel edge */
+  top:40%;
+  background:#ff2b2b;
+  padding:12px;
+  cursor:pointer;
+  border-radius:10px 0 0 10px;
+  font-weight:bold;
+  z-index:1100;
+}
+
+/* ---------- INFO PANEL TEXT ---------- */
 #infoPanel h2{
   color:#ff2b2b;
   margin-top:0;
@@ -161,11 +163,10 @@ button:hover{
   <button id="clearBtn">Clear</button>
 </div>
 
-<!-- SIDE TAB BUTTON -->
-<div id="infoButton">All About</div>
-
 <!-- INFO PANEL -->
 <div id="infoPanel">
+  <div id="infoButton">All About</div>
+
   <h2>About This Project</h2>
   <p>
     This project is a web-based AI assistant designed to help students organize
@@ -179,7 +180,7 @@ button:hover{
   <h2>Creator</h2>
   <p>
     Created by Andrew Bachez (Me) as part of my IB Personal Project focused on
-    creating a AI that helps with both studying and planning.
+    creating an AI that helps with both studying and planning.
   </p>
 
   <h2>How To Use</h2>
@@ -244,7 +245,6 @@ async function sendMessage(){
 /* ---------- BUTTON LISTENERS ---------- */
 sendBtn.addEventListener("click",sendMessage);
 input.addEventListener("keydown",e=>{if(e.key==="Enter") sendMessage();});
-
 clearBtn.addEventListener("click",()=>{chat.innerHTML="";});
 
 /* ---------- INFO PANEL TOGGLE ---------- */
