@@ -1,297 +1,305 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <title>Study & Planning AI</title>
-  <style>
-    /* ---------- BODY & GENERAL ---------- */
-    body {
-      font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
-      padding: 2rem;
-      background: linear-gradient(135deg, #0f2027, #203a43, #2c5364);
-      color: #fff;
-    }
+<meta charset="UTF-8">
+<title>Study & Planning AI</title>
 
-    h1 {
-      color: #00ffff;
-      text-align: center;
-      text-shadow: 0 0 5px #00ffff, 0 0 10px #00ffff;
-      margin-bottom: 1rem;
-    }
+<style>
 
-    /* ---------- CHAT BOX ---------- */
-    #chat {
-      border-radius: 15px;
-      padding: 1rem;
-      height: 400px;
-      overflow-y: auto;
-      background: rgba(255, 255, 255, 0.05);
-      box-shadow: 0 4px 10px rgba(0,0,0,0.3);
-      display: flex;
-      flex-direction: column;
-      gap: 0.5rem;
-    }
+/* ---------- BODY ---------- */
 
-    /* ---------- CHAT BUBBLES ---------- */
-    .user, .ai {
-      padding: 0.5rem 1rem;
-      display: inline-block;
-      max-width: 70%;
-      word-wrap: break-word;
-    }
+body{
+font-family: "Segoe UI", sans-serif;
+background: linear-gradient(135deg,#000000,#1a0000,#300000);
+color:white;
+padding:2rem;
+}
 
-    .user {
-      background: linear-gradient(90deg, #1f8ef1, #1c6fe0);
-      color: #fff;
-      border-radius: 15px 15px 0 15px;
-      align-self: flex-end;
-      box-shadow: 0 2px 5px rgba(0,0,0,0.3);
-    }
+/* ---------- TITLE ---------- */
 
-    .ai {
-      background: linear-gradient(90deg, #00ffaa, #00ddbb);
-      color: #000;
-      border-radius: 15px 15px 15px 0;
-      align-self: flex-start;
-      box-shadow: 0 2px 5px rgba(0,0,0,0.3);
-      text-shadow: 0 0 3px #00ffaa;
-    }
+h1{
+text-align:center;
+color:#ff2b2b;
+text-shadow:0 0 8px #ff0000;
+margin-bottom:20px;
+}
 
-    /* ---------- INPUT & BUTTON ---------- */
-    #userMessage {
-      flex: 1;
-      padding: 0.5rem;
-      border-radius: 10px;
-      border: none;
-      outline: none;
-    }
+/* ---------- CHAT ---------- */
 
-    button {
-      padding: 0.5rem 1rem;
-      border: none;
-      border-radius: 10px;
-      background: #1f8ef1;
-      color: #fff;
-      cursor: pointer;
-      transition: 0.2s all;
-    }
+#chat{
+height:400px;
+overflow-y:auto;
+border-radius:12px;
+padding:1rem;
+background:rgba(255,255,255,0.05);
+display:flex;
+flex-direction:column;
+gap:8px;
+box-shadow:0 0 10px rgba(255,0,0,0.2);
+}
 
-    button:hover {
-      background: #0f6ec7;
-    }
+/* ---------- CHAT BUBBLES ---------- */
 
-    /* Button container */
-    #buttonContainer {
-      display: flex;
-      gap: 0.5rem;
-      margin-top: 0.5rem;
-      flex-wrap: wrap;
-    }
+.user{
+align-self:flex-end;
+background:#ff2b2b;
+padding:8px 14px;
+border-radius:12px 12px 0 12px;
+max-width:70%;
+}
 
-    /* ---------- TYPING INDICATOR ---------- */
-    #typing {
-      display: flex;
-      align-items: center;
-      font-style: italic;
-      color: #aaa;
-      margin: 0.5rem 0;
-    }
+.ai{
+align-self:flex-start;
+background:#111;
+border:1px solid #ff2b2b;
+padding:8px 14px;
+border-radius:12px 12px 12px 0;
+max-width:70%;
+}
 
-    #typingDots span {
-      display: inline-block;
-      animation: bounce 1s infinite;
-      margin-left: 2px;
-    }
+/* ---------- INPUT ---------- */
 
-    #typingDots span:nth-child(1) { animation-delay: 0s; }
-    #typingDots span:nth-child(2) { animation-delay: 0.2s; }
-    #typingDots span:nth-child(3) { animation-delay: 0.4s; }
+#inputContainer{
+display:flex;
+margin-top:10px;
+gap:8px;
+}
 
-    @keyframes bounce {
-      0%, 80%, 100% { transform: translateY(0); }
-      40% { transform: translateY(-6px); }
-    }
+#userMessage{
+flex:1;
+padding:8px;
+border-radius:8px;
+border:none;
+outline:none;
+background:#111;
+color:white;
+border:1px solid #ff2b2b;
+}
 
-    /* ---------- SCROLLBAR ---------- */
-    #chat::-webkit-scrollbar {
-      width: 8px;
-    }
-    #chat::-webkit-scrollbar-thumb {
-      background: rgba(0,255,170,0.5);
-      border-radius: 4px;
-    }
+/* ---------- BUTTON ---------- */
 
-    /* ---------- SUBJECT OVERLAY ---------- */
-    #subjectOverlay {
-      display: none;
-      position: fixed;
-      top:0; left:0; right:0; bottom:0;
-      background: rgba(0,0,0,0.85);
-      color: #fff;
-      display: flex;
-      flex-direction: column;
-      justify-content: center;
-      align-items: center;
-      gap: 1rem;
-      z-index: 1000;
-    }
+button{
+background:#ff2b2b;
+border:none;
+padding:8px 14px;
+border-radius:8px;
+color:white;
+cursor:pointer;
+transition:0.2s;
+}
 
-    .subjectBtn {
-      padding: 0.5rem 1rem;
-      border-radius: 8px;
-      border: none;
-      background: #00ffaa;
-      color: #000;
-      cursor: pointer;
-      transition: 0.2s;
-    }
-    .subjectBtn:hover { background: #00ddbb; }
+button:hover{
+background:#ff0000;
+}
 
-    #cancelSubject {
-      margin-top: 1rem;
-      background: #f44336;
-      color: #fff;
-      padding: 0.5rem 1rem;
-      border-radius: 8px;
-      cursor: pointer;
-    }
-    #cancelSubject:hover { background: #e53935; }
-  </style>
+/* ---------- TYPING ---------- */
+
+#typing{
+display:none;
+font-style:italic;
+color:#aaa;
+margin-top:8px;
+}
+
+#typingDots span{
+animation:blink 1.4s infinite;
+}
+
+#typingDots span:nth-child(2){animation-delay:.2s}
+#typingDots span:nth-child(3){animation-delay:.4s}
+
+@keyframes blink{
+0%,80%,100%{opacity:0}
+40%{opacity:1}
+}
+
+/* ---------- SIDE TAB BUTTON ---------- */
+
+#infoButton{
+position:fixed;
+right:0;
+top:40%;
+background:#ff2b2b;
+padding:12px;
+cursor:pointer;
+border-radius:10px 0 0 10px;
+font-weight:bold;
+}
+
+/* ---------- INFO PANEL ---------- */
+
+#infoPanel{
+position:fixed;
+right:-320px;
+top:0;
+width:320px;
+height:100%;
+background:#0b0b0b;
+border-left:3px solid #ff2b2b;
+padding:20px;
+transition:0.4s;
+overflow-y:auto;
+}
+
+#infoPanel.open{
+right:0;
+}
+
+#infoPanel h2{
+color:#ff2b2b;
+margin-top:0;
+}
+
+</style>
 </head>
+
 <body>
-  <h1>Study & Planning AI</h1>
 
-  <div id="chat"></div>
+<h1>Study & Planning AI</h1>
 
-  <div id="typing" class="ai">
-    AI is typing<span id="typingDots"></span>
-  </div>
+<div id="chat"></div>
 
-  <div id="inputContainer" style="display: flex; gap: 0.5rem; margin-top: 0.5rem;">
-    <input type="text" id="userMessage" placeholder="Type your question...">
-  </div>
+<div id="typing">
+AI is typing<span id="typingDots">...</span>
+</div>
 
-  <div id="buttonContainer">
-    <button id="sendBtn">Send</button>
-    <button id="clearBtn">Clear Chat</button>
-    <button id="planBtn">7-Day Study Plan</button>
-  </div>
+<div id="inputContainer">
+<input id="userMessage" placeholder="Ask for study help, schedules, or planning advice">
+<button id="sendBtn">Send</button>
+<button id="clearBtn">Clear</button>
+</div>
 
-  <!-- SUBJECT SELECTION OVERLAY -->
-  <div id="subjectOverlay">
-    <h2>Select a subject for your study plan</h2>
-    <div id="subjectButtons" style="display:flex; gap:0.5rem; flex-wrap: wrap;">
-      <button class="subjectBtn">Math</button>
-      <button class="subjectBtn">English</button>
-      <button class="subjectBtn">Reading</button>
-      <button class="subjectBtn">Science</button>
-      <button class="subjectBtn">Other</button>
-    </div>
-    <button id="cancelSubject">Cancel</button>
-  </div>
+<!-- SIDE TAB BUTTON -->
 
-  <script>
-    const chatDiv = document.getElementById('chat');
-    const input = document.getElementById('userMessage');
-    const buttonSend = document.getElementById('sendBtn');
-    const buttonClear = document.getElementById('clearBtn');
-    const buttonPlan = document.getElementById('planBtn');
-    const typing = document.getElementById('typing');
-    const backendUrl = "https://study-planner-ai-backend.vercel.app/api/chat";
+<div id="infoButton">All About</div>
 
-    // Subject overlay elements
-    const subjectOverlay = document.getElementById("subjectOverlay");
-    const subjectButtons = document.querySelectorAll(".subjectBtn");
-    const cancelSubject = document.getElementById("cancelSubject");
+<!-- INFO PANEL -->
 
-    function appendMessage(text, sender) {
-      const div = document.createElement('div');
-      div.className = sender;
-      div.innerHTML = text.replace(/\n/g, "<br>");
-      chatDiv.appendChild(div);
-      chatDiv.scrollTop = chatDiv.scrollHeight;
-    }
+<div id="infoPanel">
 
-    function showTyping() {
-      typing.style.display = "flex";
-      const dotsContainer = document.getElementById("typingDots");
-      dotsContainer.innerHTML = "<span>.</span><span>.</span><span>.</span>";
-    }
+<h2>About This Project</h2>
 
-    function hideTyping() {
-      typing.style.display = "none";
-      const dotsContainer = document.getElementById("typingDots");
-      dotsContainer.innerHTML = "";
-    }
+<p>
+This project is a web-based AI assistant designed to help students organize
+their studying and plan upcoming academic tasks.
+</p>
 
-    async function sendMessage(message = null) {
-      const msg = message || input.value.trim();
-      if (!msg) return;
+<p>
+The AI can help create study schedules, explain study strategies,
+and assist with planning future assignments.
+</p>
 
-      appendMessage("You: " + msg, "user");
-      input.value = "";
-      buttonSend.disabled = true;
-      buttonPlan.disabled = true;
+<h2>Creator</h2>
 
-      showTyping();
+<p>
+Created by <b>Andre</b> as part of an IB Personal Project focused on
+combining artificial intelligence with web development.
+</p>
 
-      try {
-        const response = await fetch(backendUrl, {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ message: msg })
-        });
+<h2>How To Use</h2>
 
-        const data = await response.json();
+<ul>
+<li>Type a question in the chat box</li>
+<li>Ask for help with studying or planning</li>
+<li>Example: "Make a 5 day study plan for math"</li>
+<li>Press Enter or Send</li>
+</ul>
 
-        hideTyping();
-        buttonSend.disabled = false;
-        buttonPlan.disabled = false;
+<p>
+The AI will respond with structured advice or planning suggestions.
+</p>
 
-        if (data.reply) {
-          appendMessage("AI: " + data.reply, "ai");
-        } else if (data.error) {
-          appendMessage("⚠️ " + data.error, "ai");
-        }
-      } catch (err) {
-        hideTyping();
-        buttonSend.disabled = false;
-        buttonPlan.disabled = false;
-        appendMessage("Error connecting to backend", "ai");
-        console.error(err);
-      }
-    }
+</div>
 
-    // ---------- Event Listeners ----------
+<script>
 
-    // Send button & Enter key
-    buttonSend.addEventListener('click', () => sendMessage());
-    input.addEventListener('keydown', e => { if (e.key === 'Enter') sendMessage(); });
+/* ---------- ELEMENTS ---------- */
 
-    // Clear chat
-    buttonClear.addEventListener('click', () => {
-      chatDiv.innerHTML = "";
-    });
+const chat = document.getElementById("chat");
+const input = document.getElementById("userMessage");
+const sendBtn = document.getElementById("sendBtn");
+const clearBtn = document.getElementById("clearBtn");
+const typing = document.getElementById("typing");
 
-    // Quick 7-Day Study Plan button opens overlay
-    buttonPlan.addEventListener("click", () => {
-      subjectOverlay.style.display = "flex";
-    });
+const backendUrl = "https://study-planner-ai-backend.vercel.app/api/chat";
 
-    // Subject selection
-    subjectButtons.forEach(btn => {
-      btn.addEventListener("click", () => {
-        const subject = btn.textContent;
-        subjectOverlay.style.display = "none";
-        sendMessage(`Create a 7-day study plan for ${subject}`);
-      });
-    });
+/* ---------- CHAT FUNCTION ---------- */
 
-    // Cancel overlay
-    cancelSubject.addEventListener("click", () => {
-      subjectOverlay.style.display = "none";
-    });
+function addMessage(text, sender){
 
-  </script>
+const div = document.createElement("div");
+div.className = sender;
+div.innerHTML = text.replace(/\n/g,"<br>");
+chat.appendChild(div);
+
+chat.scrollTop = chat.scrollHeight;
+
+}
+
+/* ---------- SEND MESSAGE ---------- */
+
+async function sendMessage(){
+
+const message = input.value.trim();
+
+if(!message) return;
+
+addMessage("You: "+message,"user");
+
+input.value="";
+
+typing.style.display="block";
+
+try{
+
+const response = await fetch(backendUrl,{
+method:"POST",
+headers:{ "Content-Type":"application/json" },
+body:JSON.stringify({message})
+});
+
+const data = await response.json();
+
+typing.style.display="none";
+
+if(data.reply){
+addMessage("AI: "+data.reply,"ai");
+}
+else{
+addMessage("Error: "+data.error,"ai");
+}
+
+}catch(err){
+
+typing.style.display="none";
+addMessage("Error connecting to AI","ai");
+
+}
+
+}
+
+/* ---------- BUTTONS ---------- */
+
+sendBtn.addEventListener("click",sendMessage);
+
+input.addEventListener("keydown",e=>{
+if(e.key==="Enter") sendMessage();
+});
+
+clearBtn.addEventListener("click",()=>{
+chat.innerHTML="";
+});
+
+/* ---------- INFO PANEL ---------- */
+
+const infoButton = document.getElementById("infoButton");
+const infoPanel = document.getElementById("infoPanel");
+
+infoButton.onclick = () =>{
+infoPanel.classList.toggle("open");
+};
+
+</script>
+
 </body>
 </html>
