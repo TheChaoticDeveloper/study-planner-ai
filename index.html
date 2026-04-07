@@ -128,15 +128,19 @@ button:hover{
 
 /* ---------- INFO TAB BUTTON ---------- */
 #infoButton{
-  position:absolute; /* inside panel */
-  left:-60px; /* sticks outside panel edge */
+  position:absolute;
+  left:-80px; /* wider tab */
   top:40%;
   background:#ff2b2b;
-  padding:12px;
+  padding:20px 14px; /* taller + wider */
   cursor:pointer;
-  border-radius:10px 0 0 10px;
+  border-radius:12px 0 0 12px;
   font-weight:bold;
-  z-index:1100;
+  font-size:18px; /* bigger text */
+  height:120px; /* makes the tab tall */
+  display:flex;
+  align-items:center;
+  justify-content:center;
 }
 
 /* ---------- INFO PANEL TEXT ---------- */
