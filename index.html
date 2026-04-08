@@ -5,146 +5,167 @@
 <title>Study & Planning AI</title>
 
 <style>
+
 /* ---------- BODY ---------- */
+
 body{
-  font-family:"Segoe UI",sans-serif;
-  background: linear-gradient(135deg,#000000,#1a0000,#300000);
-  color:white;
-  padding:2rem;
-  margin:0;
+font-family:"Segoe UI",sans-serif;
+background: linear-gradient(135deg,#000000,#1a0000,#300000);
+color:white;
+padding:2rem;
+margin:0;
 }
 
 /* ---------- TITLE ---------- */
+
 h1{
-  text-align:center;
-  color:#ff2b2b;
-  text-shadow:0 0 8px #ff0000;
-  margin-bottom:20px;
+text-align:center;
+color:#ff2b2b;
+text-shadow:0 0 8px #ff0000;
+margin-bottom:20px;
 }
 
 /* ---------- CHAT ---------- */
+
 #chat{
-  height:400px;
-  overflow-y:auto;
-  border-radius:12px;
-  padding:1rem;
-  background:rgba(255,255,255,0.05);
-  display:flex;
-  flex-direction:column;
-  gap:8px;
-  box-shadow:0 0 10px rgba(255,0,0,0.2);
+height:400px;
+overflow-y:auto;
+border-radius:12px;
+padding:1rem;
+background:rgba(255,255,255,0.05);
+display:flex;
+flex-direction:column;
+gap:8px;
+box-shadow:0 0 10px rgba(255,0,0,0.2);
 }
 
 /* ---------- CHAT BUBBLES ---------- */
+
 .user{
-  align-self:flex-end;
-  background:#ff2b2b;
-  padding:8px 14px;
-  border-radius:12px 12px 0 12px;
-  max-width:70%;
+align-self:flex-end;
+background:#ff2b2b;
+padding:8px 14px;
+border-radius:12px 12px 0 12px;
+max-width:70%;
 }
 
 .ai{
-  align-self:flex-start;
-  background:#111;
-  border:1px solid #ff2b2b;
-  padding:8px 14px;
-  border-radius:12px 12px 12px 0;
-  max-width:70%;
+align-self:flex-start;
+background:#111;
+border:1px solid #ff2b2b;
+padding:8px 14px;
+border-radius:12px 12px 12px 0;
+max-width:70%;
 }
 
 /* ---------- INPUT ---------- */
+
 #inputContainer{
-  display:flex;
-  margin-top:10px;
-  gap:8px;
+display:flex;
+margin-top:10px;
+gap:8px;
 }
 
 #userMessage{
-  flex:1;
-  padding:8px;
-  border-radius:8px;
-  border:none;
-  outline:none;
-  background:#111;
-  color:white;
-  border:1px solid #ff2b2b;
+flex:1;
+padding:8px;
+border-radius:8px;
+border:none;
+outline:none;
+background:#111;
+color:white;
+border:1px solid #ff2b2b;
 }
 
-/* ---------- BUTTON ---------- */
+/* ---------- BUTTONS ---------- */
+
 button{
-  background:#ff2b2b;
-  border:none;
-  padding:8px 14px;
-  border-radius:8px;
-  color:white;
-  cursor:pointer;
-  transition:0.2s;
+background:#ff2b2b;
+border:none;
+padding:8px 14px;
+border-radius:8px;
+color:white;
+cursor:pointer;
+transition:0.2s;
 }
 
 button:hover{
-  background:#ff0000;
+background:#ff0000;
 }
 
-/* ---------- TYPING ---------- */
+/* ---------- TYPING INDICATOR ---------- */
+
 #typing{
-  display:none;
-  font-style:italic;
-  color:#aaa;
-  margin-top:8px;
+display:none;
+font-style:italic;
+color:#aaa;
+margin-top:8px;
 }
 
 #typingDots span{
-  animation:blink 1.4s infinite;
+animation:blink 1.4s infinite;
 }
 
 #typingDots span:nth-child(2){animation-delay:.2s}
 #typingDots span:nth-child(3){animation-delay:.4s}
 
 @keyframes blink{
-  0%,80%,100%{opacity:0}
-  40%{opacity:1}
+0%,80%,100%{opacity:0}
+40%{opacity:1}
 }
 
-/* ---------- INFO PANEL ---------- */
+/* ---------- SIDEBAR ---------- */
+
 #infoPanel{
-  position:fixed;
-  right:-320px; /* hidden offscreen */
-  top:0;
-  width:320px;
-  height:100%;
-  background:#0b0b0b;
-  border-left:3px solid #ff2b2b;
-  padding:20px;
-  transition:0.4s;
-  overflow-y:auto;
-  z-index:1000;
+position:fixed;
+right:-320px;
+top:0;
+width:320px;
+height:100%;
+background:#0b0b0b;
+border-left:3px solid #ff2b2b;
+padding:20px;
+transition:0.4s;
+overflow-y:auto;
+z-index:1000;
 }
 
-/* ---------- INFO PANEL OPEN ---------- */
 #infoPanel.open{
-  right:0; /* slide in */
+right:0;
 }
 
-/* ---------- INFO TAB BUTTON ---------- */
+/* ---------- ARROW BUTTON ---------- */
+
 #infoButton{
-  position:absolute;
-  top:10px;      /* place at top of sidebar */
-  left:-110px;   /* pushes tab outside the sidebar */
-  width:110px;
-  text-align:center;
-  background:#ff2b2b;
-  padding:10px;
-  cursor:pointer;
-  border-radius:10px 0 0 10px;
-  font-weight:bold;
+position:absolute;
+top:10px;
+left:-40px;
+width:40px;
+height:40px;
+display:flex;
+align-items:center;
+justify-content:center;
+background:#ff2b2b;
+color:white;
+font-size:20px;
+font-weight:bold;
+cursor:pointer;
+border-radius:8px 0 0 8px;
+user-select:none;
 }
 
-/* ---------- INFO PANEL TEXT ---------- */
-#infoPanel h2{
-  color:#ff2b2b;
-  margin-top:0;
+#infoButton:hover{
+background:#ff0000;
+box-shadow:0 0 8px #ff0000;
 }
+
+/* ---------- SIDEBAR TEXT ---------- */
+
+#infoPanel h2{
+color:#ff2b2b;
+margin-top:0;
+}
+
 </style>
 </head>
 
@@ -155,49 +176,68 @@ button:hover{
 <div id="chat"></div>
 
 <div id="typing">
-  AI is typing<span id="typingDots">...</span>
+AI is typing<span id="typingDots">...</span>
 </div>
 
 <div id="inputContainer">
-  <input id="userMessage" placeholder="Ask for study help, schedules, or planning advice">
-  <button id="sendBtn">Send</button>
-  <button id="clearBtn">Clear</button>
+
+<input id="userMessage" placeholder="Ask for study help, schedules, or planning advice">
+
+<button id="sendBtn">Send</button>
+
+<button id="clearBtn">Clear</button>
+
 </div>
 
-<!-- INFO PANEL -->
+<!-- SIDEBAR -->
+
 <div id="infoPanel">
-  <div id="infoButton"><b> About </b></div>
 
-  <h2>About This Project</h2>
-  <p>
-    This project is a web-based AI assistant designed to help students organize
-    their studying and plan upcoming future events.
-  </p>
-  <p>
-    This AI can help create study schedules, explain study strategies,
-    and assist with planning future assignments.
-  </p>
+<div id="infoButton">&lt;</div>
 
-  <h2>Creator</h2>
-  <p>
-    Created by Andrew Bachez (Me) as part of my IB Personal Project focused on
-    creating an AI that helps with both studying and planning.
-  </p>
+<h2>About This Project</h2>
 
-  <h2>How To Use</h2>
-  <ul>
-    <li>Type a question in the chat box</li>
-    <li>Ask for help with studying or planning</li>
-    <li>Example: "Make a 5 day study plan for math"</li>
-    <li>Press Enter or The Send Button</li>
-  </ul>
-  <p>
-    The AI should respond with structured advice or planning suggestions.
-  </p>
+<p>
+This project is a web-based AI assistant designed to help students organize
+their studying and plan upcoming future events.
+</p>
+
+<p>
+The AI can help create study schedules, explain study strategies,
+and assist with planning future assignments.
+</p>
+
+<h2>Creator</h2>
+
+<p>
+Created by Andrew Bachez (Me) as part of my IB Personal Project focused on
+creating an AI that helps with both studying and planning.
+</p>
+
+<h2>How To Use</h2>
+
+<ul>
+
+<li>Type a question in the chat box</li>
+
+<li>Ask for help with studying or planning</li>
+
+<li>Example: "Make a 5 day study plan for math"</li>
+
+<li>Press Enter or Send</li>
+
+</ul>
+
+<p>
+The AI will/should respond with structured advice or planning suggestions.
+</p>
+
 </div>
 
 <script>
+
 /* ---------- ELEMENTS ---------- */
+
 const chat = document.getElementById("chat");
 const input = document.getElementById("userMessage");
 const sendBtn = document.getElementById("sendBtn");
@@ -206,55 +246,133 @@ const typing = document.getElementById("typing");
 
 const backendUrl = "https://study-planner-ai-backend.vercel.app/api/chat";
 
-/* ---------- CHAT FUNCTIONS ---------- */
-function addMessage(text,sender){
-  const div = document.createElement("div");
-  div.className = sender;
-  div.innerHTML = text.replace(/\n/g,"<br>");
-  chat.appendChild(div);
-  chat.scrollTop = chat.scrollHeight;
+/* ---------- TYPING EFFECT FUNCTION ---------- */
+
+function addMessage(text, sender){
+
+const div = document.createElement("div");
+
+div.className = sender;
+
+chat.appendChild(div);
+
+let i = 0;
+
+function typeLetter(){
+
+if(i < text.length){
+
+if(text.charAt(i) === "\n"){
+
+div.innerHTML += "<br>";
+
+}else{
+
+div.innerHTML += text.charAt(i);
+
 }
+
+i++;
+
+chat.scrollTop = chat.scrollHeight;
+
+setTimeout(typeLetter,15);
+
+}
+
+}
+
+typeLetter();
+
+}
+
+/* ---------- SEND MESSAGE ---------- */
 
 async function sendMessage(){
-  const message = input.value.trim();
-  if(!message) return;
 
-  addMessage("You: "+message,"user");
-  input.value="";
-  typing.style.display="block";
+const message = input.value.trim();
 
-  try{
-    const response = await fetch(backendUrl,{
-      method:"POST",
-      headers:{ "Content-Type":"application/json" },
-      body:JSON.stringify({message})
-    });
-    const data = await response.json();
-    typing.style.display="none";
+if(!message) return;
 
-    if(data.reply){
-      addMessage("AI: "+data.reply,"ai");
-    }else{
-      addMessage("Error: "+data.error,"ai");
-    }
-  }catch(err){
-    typing.style.display="none";
-    addMessage("Error connecting to AI","ai");
-  }
+addMessage("You: "+message,"user");
+
+input.value="";
+
+typing.style.display="block";
+
+try{
+
+const response = await fetch(backendUrl,{
+
+method:"POST",
+
+headers:{ "Content-Type":"application/json" },
+
+body:JSON.stringify({message})
+
+});
+
+const data = await response.json();
+
+typing.style.display="none";
+
+if(data.reply){
+
+addMessage("AI: "+data.reply,"ai");
+
+}else{
+
+addMessage("Error: "+data.error,"ai");
+
 }
 
-/* ---------- BUTTON LISTENERS ---------- */
-sendBtn.addEventListener("click",sendMessage);
-input.addEventListener("keydown",e=>{if(e.key==="Enter") sendMessage();});
-clearBtn.addEventListener("click",()=>{chat.innerHTML="";});
+}catch(err){
 
-/* ---------- INFO PANEL TOGGLE ---------- */
+typing.style.display="none";
+
+addMessage("Error connecting to AI","ai");
+
+}
+
+}
+
+/* ---------- BUTTONS ---------- */
+
+sendBtn.addEventListener("click",sendMessage);
+
+input.addEventListener("keydown",e=>{
+
+if(e.key==="Enter") sendMessage();
+
+});
+
+clearBtn.addEventListener("click",()=>{
+
+chat.innerHTML="";
+
+});
+
+/* ---------- SIDEBAR TOGGLE ---------- */
+
 const infoButton = document.getElementById("infoButton");
 const infoPanel = document.getElementById("infoPanel");
 
 infoButton.addEventListener("click",()=>{
-  infoPanel.classList.toggle("open"); // slide in/out on each click
+
+infoPanel.classList.toggle("open");
+
+if(infoPanel.classList.contains("open")){
+
+infoButton.innerHTML="&gt;";
+
+}else{
+
+infoButton.innerHTML="&lt;";
+
+}
+
 });
+
 </script>
 
 </body>
