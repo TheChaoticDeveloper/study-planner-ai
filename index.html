@@ -27,7 +27,7 @@
     }
 
     #userMessage {
-      width: 80%;
+      width: 70%;
       padding: 0.5rem;
       border-radius: 4px;
       border: 1px solid #ff4d4d;
@@ -42,6 +42,7 @@
       border: none;
       border-radius: 4px;
       cursor: pointer;
+      margin-left: 0.5rem;
     }
 
     .user {
@@ -58,6 +59,12 @@
       color: gray;
       display: none;
     }
+
+    /* Container for input + buttons */
+    #inputContainer {
+      display: flex;
+      align-items: center;
+    }
   </style>
 </head>
 <body>
@@ -67,13 +74,17 @@
   <div id="chat"></div>
   <p id="typing">AI is typing...</p>
 
-  <input type="text" id="userMessage" placeholder="Type your question...">
-  <button id="sendBtn">Send</button>
+  <div id="inputContainer">
+    <input type="text" id="userMessage" placeholder="Type your question...">
+    <button id="sendBtn">Send</button>
+    <button id="clearBtn">Clear Chat</button>
+  </div>
 
   <script>
     const chatDiv = document.getElementById('chat');
     const input = document.getElementById('userMessage');
-    const button = document.getElementById('sendBtn');
+    const sendBtn = document.getElementById('sendBtn');
+    const clearBtn = document.getElementById('clearBtn');
     const backendUrl = "https://study-planner-ai-backend.vercel.app/api/chat"; // your backend
 
     function appendMessage(text, sender) {
@@ -115,8 +126,12 @@
       }
     }
 
-    button.addEventListener('click', sendMessage);
+    sendBtn.addEventListener('click', sendMessage);
     input.addEventListener('keydown', e => { if (e.key === 'Enter') sendMessage(); });
+
+    clearBtn.addEventListener('click', () => {
+      chatDiv.innerHTML = "";
+    });
   </script>
 
 </body>
