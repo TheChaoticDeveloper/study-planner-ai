@@ -1,379 +1,211 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<title>Study & Planning AI</title>
+  <meta charset="UTF-8">
+  <title>Study & Planning AI</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      padding: 2rem;
+      background: #111; /* dark background */
+      color: #fff;
+      margin: 0;
+    }
 
-<style>
+    h1 {
+      color: #ff4d4d; /* bright red */
+    }
 
-/* ---------- BODY ---------- */
+    #chat {
+      border: 1px solid #ff4d4d;
+      padding: 1rem;
+      height: 300px;
+      overflow-y: auto;
+      background: #222;
+      border-radius: 8px;
+      margin-bottom: 1rem;
+    }
 
-body{
-font-family:"Segoe UI",sans-serif;
-background: linear-gradient(135deg,#000000,#1a0000,#300000);
-color:white;
-padding:2rem;
-margin:0;
-}
+    #userMessage {
+      width: 80%;
+      padding: 0.5rem;
+      border-radius: 4px;
+      border: 1px solid #ff4d4d;
+      background: #111;
+      color: #fff;
+    }
 
-/* ---------- TITLE ---------- */
+    button {
+      padding: 0.5rem 1rem;
+      background: #ff4d4d;
+      color: #fff;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+    }
 
-h1{
-text-align:center;
-color:#ff2b2b;
-text-shadow:0 0 8px #ff0000;
-margin-bottom:20px;
-}
+    .user {
+      color: #00bfff;
+      margin: 0.5rem 0;
+    }
 
-/* ---------- CHAT ---------- */
+    .ai {
+      color: #4dff4d;
+      margin: 0.5rem 0;
+    }
 
-#chat{
-height:400px;
-overflow-y:auto;
-border-radius:12px;
-padding:1rem;
-background:rgba(255,255,255,0.05);
-display:flex;
-flex-direction:column;
-gap:8px;
-box-shadow:0 0 10px rgba(255,0,0,0.2);
-}
+    #typing {
+      color: gray;
+      display: none;
+    }
 
-/* ---------- CHAT BUBBLES ---------- */
+    /* About sidebar */
+    #aboutInfo {
+      position: fixed;
+      top: 0;
+      right: -250px; /* hidden initially */
+      width: 250px;
+      height: 100%;
+      background-color: #222;
+      padding: 1rem;
+      overflow-y: auto;
+      transition: right 0.3s ease;
+      z-index: 999;
+    }
 
-.user{
-align-self:flex-end;
-background:#ff2b2b;
-padding:8px 14px;
-border-radius:12px 12px 0 12px;
-max-width:70%;
-}
+    #aboutInfo.visible {
+      right: 0;
+    }
 
-.ai{
-align-self:flex-start;
-background:#111;
-border:1px solid #ff2b2b;
-padding:8px 14px;
-border-radius:12px 12px 12px 0;
-max-width:70%;
-}
+    #aboutTab {
+      position: fixed;
+      top: 50%;
+      right: 0;
+      transform: translateY(-50%);
+      background-color: #222;
+      color: #fff;
+      padding: 0.5rem 1rem;
+      cursor: pointer;
+      border-radius: 8px 0 0 8px;
+      z-index: 1000;
+      transition: right 0.3s ease;
+    }
 
-/* ---------- INPUT ---------- */
+    #aboutTab.open {
+      right: 250px;
+    }
 
-#inputContainer{
-display:flex;
-margin-top:10px;
-gap:8px;
-}
+    /* Quick styling for headings inside sidebar */
+    #aboutInfo h1 {
+      font-size: 16px;
+      font-weight: bold;
+      color: #ff4d4d;
+      margin-top: 0;
+    }
 
-#userMessage{
-flex:1;
-padding:8px;
-border-radius:8px;
-border:none;
-outline:none;
-background:#111;
-color:white;
-border:1px solid #ff2b2b;
-}
+    #aboutInfo h2 {
+      font-size: 14px;
+      font-weight: bold;
+      color: #ff4d4d;
+      margin-bottom: 0.2rem;
+    }
 
-/* ---------- BUTTONS ---------- */
-
-button{
-background:#ff2b2b;
-border:none;
-padding:8px 14px;
-border-radius:8px;
-color:white;
-cursor:pointer;
-transition:0.2s;
-}
-
-button:hover{
-background:#ff0000;
-}
-
-/* ---------- TYPING INDICATOR ---------- */
-
-#typing{
-display:none;
-font-style:italic;
-color:#aaa;
-margin-top:8px;
-}
-
-#typingDots span{
-animation:blink 1.4s infinite;
-}
-
-#typingDots span:nth-child(2){animation-delay:.2s}
-#typingDots span:nth-child(3){animation-delay:.4s}
-
-@keyframes blink{
-0%,80%,100%{opacity:0}
-40%{opacity:1}
-}
-
-/* ---------- SIDEBAR ---------- */
-
-#infoPanel{
-position:fixed;
-right:-320px;
-top:0;
-width:320px;
-height:100%;
-background:#0b0b0b;
-border-left:3px solid #ff2b2b;
-padding:20px;
-transition:0.4s;
-overflow-y:auto;
-z-index:1000;
-}
-
-#infoPanel.open{
-right:0;
-}
-
-/* ---------- ARROW BUTTON ---------- */
-
-#infoButton{
-position:absolute;
-top:10px;
-left:-40px;
-width:40px;
-height:40px;
-display:flex;
-align-items:center;
-justify-content:center;
-background:#ff2b2b;
-color:white;
-font-size:20px;
-font-weight:bold;
-cursor:pointer;
-border-radius:8px 0 0 8px;
-user-select:none;
-}
-
-#infoButton:hover{
-background:#ff0000;
-box-shadow:0 0 8px #ff0000;
-}
-
-/* ---------- SIDEBAR TEXT ---------- */
-
-#infoPanel h2{
-color:#ff2b2b;
-margin-top:0;
-}
-
-</style>
+    #aboutInfo p, #aboutInfo li {
+      font-size: 13px;
+      line-height: 1.4;
+    }
+  </style>
 </head>
-
 <body>
 
-<h1>Study & Planning AI</h1>
-
-<div id="chat"></div>
-
-<div id="typing">
-AI is typing<span id="typingDots">...</span>
-</div>
-
-<div id="inputContainer">
-
-<input id="userMessage" placeholder="Ask for study help, schedules, or planning advice">
-
-<button id="sendBtn">Send</button>
-
-<button id="clearBtn">Clear</button>
-
-</div>
-
-<!-- SIDEBAR -->
-
-<div id="infoPanel">
-
-<div id="infoButton">&lt;</div>
-
-<h2>About This Project</h2>
-
-<p>
-This project is a web-based AI assistant designed to help students organize
-their studying and plan upcoming future events.
-</p>
-
-<p>
-The AI can help create study schedules, explain study strategies,
-and assist with planning future assignments.
-</p>
-
-<h2>Creator</h2>
-
-<p>
-Created by Andrew Bachez (Me) as part of my IB Personal Project focused on
-creating an AI that helps with both studying and planning.
-</p>
-
-<h2>How To Use</h2>
-
-<ul>
-
-<li>Type a question in the chat box</li>
-
-<li>Ask for help with studying or planning</li>
-
-<li>Example: "Make a 5 day study plan for math"</li>
-
-<li>Press Enter or Send</li>
-
-</ul>
-
-<p>
-The AI will/should respond with structured advice or planning suggestions.
-</p>
-
-</div>
-
-<script>
-
-/* ---------- ELEMENTS ---------- */
-
-const chat = document.getElementById("chat");
-const input = document.getElementById("userMessage");
-const sendBtn = document.getElementById("sendBtn");
-const clearBtn = document.getElementById("clearBtn");
-const typing = document.getElementById("typing");
-
-const backendUrl = "https://study-planner-ai-backend.vercel.app/api/chat";
-
-/* ---------- TYPING EFFECT FUNCTION ---------- */
-
-function addMessage(text, sender){
-
-const div = document.createElement("div");
-
-div.className = sender;
-
-chat.appendChild(div);
-
-let i = 0;
-
-function typeLetter(){
-
-if(i < text.length){
-
-if(text.charAt(i) === "\n"){
-
-div.innerHTML += "<br>";
-
-}else{
-
-div.innerHTML += text.charAt(i);
-
-}
-
-i++;
-
-chat.scrollTop = chat.scrollHeight;
-
-setTimeout(typeLetter,15);
-
-}
-
-}
-
-typeLetter();
-
-}
-
-/* ---------- SEND MESSAGE ---------- */
-
-async function sendMessage(){
-
-const message = input.value.trim();
-
-if(!message) return;
-
-addMessage("You: "+message,"user");
-
-input.value="";
-
-typing.style.display="block";
-
-try{
-
-const response = await fetch(backendUrl,{
-
-method:"POST",
-
-headers:{ "Content-Type":"application/json" },
-
-body:JSON.stringify({message})
-
-});
-
-const data = await response.json();
-
-typing.style.display="none";
-
-if(data.reply){
-
-addMessage("AI: "+data.reply,"ai");
-
-}else{
-
-addMessage("Error: "+data.error,"ai");
-
-}
-
-}catch(err){
-
-typing.style.display="none";
-
-addMessage("Error connecting to AI","ai");
-
-}
-
-}
-
-/* ---------- BUTTONS ---------- */
-
-sendBtn.addEventListener("click",sendMessage);
-
-input.addEventListener("keydown",e=>{
-
-if(e.key==="Enter") sendMessage();
-
-});
-
-clearBtn.addEventListener("click",()=>{
-
-chat.innerHTML="";
-
-});
-
-/* ---------- SIDEBAR TOGGLE ---------- */
-
-const infoButton = document.getElementById("infoButton");
-const infoPanel = document.getElementById("infoPanel");
-
-infoButton.addEventListener("click",()=>{
-
-infoPanel.classList.toggle("open");
-
-if(infoPanel.classList.contains("open")){
-
-infoButton.innerHTML="&gt;";
-
-}else{
-
-infoButton.innerHTML="&lt;";
-
-}
-
-});
-
-</script>
+  <h1>Study & Planning AI</h1>
+
+  <div id="chat"></div>
+  <p id="typing">AI is typing...</p>
+
+  <input type="text" id="userMessage" placeholder="Type your question...">
+  <button id="sendBtn">Send</button>
+
+  <!-- Sidebar About -->
+  <div id="aboutInfo">
+    <h1>About This Project</h1>
+    <p>This project is a web-based AI assistant designed to help students organize their studying and plan upcoming future events.</p>
+
+    <h2>Creator</h2>
+    <p>Created by Andrew Bachez as part of my IB Personal Project.</p>
+
+    <h2>How To Use</h2>
+    <ul>
+      <li>Type a question in the chat box</li>
+      <li>Ask for help with studying or planning</li>
+      <li>Press Enter or Send</li>
+    </ul>
+  </div>
+
+  <div id="aboutTab">&gt;</div>
+
+  <script>
+    const chatDiv = document.getElementById('chat');
+    const input = document.getElementById('userMessage');
+    const button = document.getElementById('sendBtn');
+    const backendUrl = "https://study-planner-ai-backend.vercel.app/api/chat"; // your backend
+
+    const aboutTab = document.getElementById('aboutTab');
+    const aboutInfo = document.getElementById('aboutInfo');
+
+    function appendMessage(text, sender) {
+      const p = document.createElement('p');
+      p.textContent = text;
+      p.className = sender;
+      chatDiv.appendChild(p);
+      chatDiv.scrollTop = chatDiv.scrollHeight;
+    }
+
+    async function sendMessage() {
+      const message = input.value.trim();
+      if (!message) return;
+
+      appendMessage("You: " + message, "user");
+      input.value = "";
+
+      const typing = document.getElementById("typing");
+      typing.style.display = "block";
+
+      try {
+        const response = await fetch(backendUrl, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ message })
+        });
+
+        const data = await response.json();
+        typing.style.display = "none";
+
+        if (data.reply) {
+          appendMessage("AI: " + data.reply, "ai");
+        } else {
+          appendMessage("Error: " + data.error, "ai");
+        }
+      } catch (err) {
+        typing.style.display = "none";
+        appendMessage("Error connecting to backend", "ai");
+      }
+    }
+
+    button.addEventListener('click', sendMessage);
+    input.addEventListener('keydown', e => { if (e.key === 'Enter') sendMessage(); });
+
+    aboutTab.addEventListener('click', () => {
+      aboutInfo.classList.toggle('visible');
+      aboutTab.classList.toggle('open');
+
+      if (aboutInfo.classList.contains('visible')) {
+        aboutTab.textContent = '<'; // sidebar visible
+      } else {
+        aboutTab.textContent = '>'; // sidebar hidden
+      }
+    });
+  </script>
 
 </body>
 </html>
