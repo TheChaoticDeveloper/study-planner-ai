@@ -58,62 +58,6 @@
       color: gray;
       display: none;
     }
-
-    /* About sidebar */
-    #aboutInfo {
-      position: fixed;
-      top: 0;
-      right: -250px; /* hidden initially */
-      width: 250px;
-      height: 100%;
-      background-color: #222;
-      padding: 1rem;
-      overflow-y: auto;
-      transition: right 0.3s ease;
-      z-index: 999;
-    }
-
-    #aboutInfo.visible {
-      right: 0;
-    }
-
-    #aboutTab {
-      position: fixed;
-      top: 50%;
-      right: 0;
-      transform: translateY(-50%);
-      background-color: #222;
-      color: #fff;
-      padding: 0.5rem 1rem;
-      cursor: pointer;
-      border-radius: 8px 0 0 8px;
-      z-index: 1000;
-      transition: right 0.3s ease;
-    }
-
-    #aboutTab.open {
-      right: 250px;
-    }
-
-    /* Quick styling for headings inside sidebar */
-    #aboutInfo h1 {
-      font-size: 16px;
-      font-weight: bold;
-      color: #ff4d4d;
-      margin-top: 0;
-    }
-
-    #aboutInfo h2 {
-      font-size: 14px;
-      font-weight: bold;
-      color: #ff4d4d;
-      margin-bottom: 0.2rem;
-    }
-
-    #aboutInfo p, #aboutInfo li {
-      font-size: 13px;
-      line-height: 1.4;
-    }
   </style>
 </head>
 <body>
@@ -126,32 +70,11 @@
   <input type="text" id="userMessage" placeholder="Type your question...">
   <button id="sendBtn">Send</button>
 
-  <!-- Sidebar About -->
-  <div id="aboutInfo">
-    <h1>About This Project</h1>
-    <p>This project is a web-based AI assistant designed to help students organize their studying and plan upcoming future events.</p>
-
-    <h2>Creator</h2>
-    <p>Created by Andrew Bachez as part of my IB Personal Project.</p>
-
-    <h2>How To Use</h2>
-    <ul>
-      <li>Type a question in the chat box</li>
-      <li>Ask for help with studying or planning</li>
-      <li>Press Enter or Send</li>
-    </ul>
-  </div>
-
-  <div id="aboutTab">&gt;</div>
-
   <script>
     const chatDiv = document.getElementById('chat');
     const input = document.getElementById('userMessage');
     const button = document.getElementById('sendBtn');
     const backendUrl = "https://study-planner-ai-backend.vercel.app/api/chat"; // your backend
-
-    const aboutTab = document.getElementById('aboutTab');
-    const aboutInfo = document.getElementById('aboutInfo');
 
     function appendMessage(text, sender) {
       const p = document.createElement('p');
@@ -194,17 +117,6 @@
 
     button.addEventListener('click', sendMessage);
     input.addEventListener('keydown', e => { if (e.key === 'Enter') sendMessage(); });
-
-    aboutTab.addEventListener('click', () => {
-      aboutInfo.classList.toggle('visible');
-      aboutTab.classList.toggle('open');
-
-      if (aboutInfo.classList.contains('visible')) {
-        aboutTab.textContent = '<'; // sidebar visible
-      } else {
-        aboutTab.textContent = '>'; // sidebar hidden
-      }
-    });
   </script>
 
 </body>
