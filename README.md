@@ -55,8 +55,3 @@ Format study plans as tables or bullet lists
 Track daily usage statistics
 
 Add authentication for multiple users
-
-```bash
-git clone https://github.com/yourusername/study-planner-ai.git
-cd study-planner-ai
-
