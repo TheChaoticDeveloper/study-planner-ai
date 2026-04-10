@@ -46,18 +46,6 @@ The app is intended for personal use and testing purposes
 Thanks and enjoy my AI
 
 ---
-
-## Setup Instructions
-
-### 1. Clone the repository
-### 2. Backend Setup:
-Create a .env file in backend/: OPENAI_API_KEY=your_openai_api_key_here
-Install dependencies: command prompt: cd backend, npm install
-Deploy to vercel: command prompt: vercel
-### 3. Frontend setup:
-The frontend is a static HTML page (index.html)
-Ensure the backendUrl in the script points to your deployed Vercel function
----
 ## Future Improvements
 
 Add session memory to remember user’s study topics
