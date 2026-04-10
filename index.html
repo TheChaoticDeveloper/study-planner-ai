@@ -145,7 +145,7 @@ function appendMessage(text,sender){
 
   const p = document.createElement("p")
 
-  p.textContent = text
+  p.innerHTML = text.replace(/\n/g, "<br>");
 
   p.className = sender
 
